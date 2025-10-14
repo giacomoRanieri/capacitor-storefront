@@ -23,9 +23,7 @@ jobs:
         java-version: '21'
         
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
-      with: # This 'with' block is required for the action to configure the SDK
-        api-level: 35
+      uses: android-actions/setup-android@v3
         
     - name: Setup Xcode
       uses: maxim-lobanov/setup-xcode@v1
