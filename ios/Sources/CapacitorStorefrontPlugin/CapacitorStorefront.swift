@@ -3,6 +3,10 @@ import StoreKit
 
 @objc public class CapacitorStorefront: NSObject {
 
+    private enum Status {
+        case uninitialized
+        case initialized
+    }
     private var status: Status = .uninitialized
     private var skPaymentQueue: SKPaymentQueue?
 
