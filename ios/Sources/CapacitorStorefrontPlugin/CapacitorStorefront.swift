@@ -1,4 +1,5 @@
 import Foundation
+import StoreKit
 
 @objc public class CapacitorStorefront: NSObject {
 
