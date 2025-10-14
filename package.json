@@ -1,6 +1,6 @@
 {
   "name": "capacitor-storefront",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Capacitor Plugin to access information regarding store country",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -75,5 +75,6 @@
     "android": {
       "src": "android"
     }
-  }
+  },
+  "homepage": "https://github.com/giacomoRanieri/capacitor-storefront#readme"
 }

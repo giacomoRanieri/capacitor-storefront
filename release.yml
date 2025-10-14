@@ -1,0 +1,62 @@
+name: Release and Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    environment: RELEASE
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for OIDC
+      contents: write # Required to create the release
+      packages: write # Required to publish to GitHub Packages (if used)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Get package version
+        id: package-version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Check if release already exists
+        id: check_release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+          TAG: v${{ steps.package-version.outputs.version }}
+        run: |
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            echo "release_exists=true" >> $GITHUB_OUTPUT
+            echo "Release $TAG already exists. Skipping."
+          else
+            echo "release_exists=false" >> $GITHUB_OUTPUT
+            echo "Release $TAG does not exist. Proceeding."
+          fi
+
+      - name: Install dependencies and build
+        if: steps.check_release.outputs.release_exists == 'false'
+        run: |
+          npm install --no-package-lock
+
+      - name: Publish to npm
+        if: steps.check_release.outputs.release_exists == 'false'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.release_exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+          TAG: v${{ steps.package-version.outputs.version }}
+        run: gh release create "$TAG" --generate-notes --title "$TAG"
