@@ -1,0 +1,37 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4 # Use v4 for checkout
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4 # Use v4 for setup-node
+      with:
+        node-version: '22.x'
+        
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4 # Use v4 for setup-java
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+        
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: 'latest-stable'
+        
+    - name: Install dependencies
+      run: npm install --no-package-lock # 'run' is correctly indented under '- name:'
+        
+    - name: Run verify
+      run: npm run verify # 'run' is correctly indented under '- name:'
