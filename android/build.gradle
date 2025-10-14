@@ -3,10 +3,15 @@ ext {
     androidxAppCompatVersion = project.hasProperty('androidxAppCompatVersion') ? rootProject.ext.androidxAppCompatVersion : '1.7.0'
     androidxJunitVersion = project.hasProperty('androidxJunitVersion') ? rootProject.ext.androidxJunitVersion : '1.2.1'
     androidxEspressoCoreVersion = project.hasProperty('androidxEspressoCoreVersion') ? rootProject.ext.androidxEspressoCoreVersion : '3.6.1'
-    kotlinVersion = '2.1.0'
+    androidxTestCoreVersion = project.hasProperty('androidxTestCoreVersion') ? rootProject.ext.androidxTestCoreVersion : '1.5.0'
+    androidxTestRunnerVersion = project.hasProperty('androidxTestRunnerVersion') ? rootProject.ext.androidxTestRunnerVersion : project.hasProperty('androidxTestCoreVersion') ? rootProject.ext.androidxTestCoreVersion : '1.5.0'
+
+    billingClientVersion = '7.1.1'
+
+    kotlinVersion = '2.1.20'
     coroutinesVersion = '1.7.1'
-    mockkVersion = '1.13.5'
-    robolectricVersion = '4.10.3'
+    mockkVersion = '1.14.6'
+    robolectricVersion = '4.16'
 }
 
 buildscript {
@@ -59,7 +64,7 @@ dependencies {
     implementation project(':capacitor-android')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
 
-    implementation "com.android.billingclient:billing:7.1.1"
+    implementation "com.android.billingclient:billing:$billingClientVersion"
     
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
@@ -71,10 +76,11 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     testImplementation "io.mockk:mockk-android:$mockkVersion"
+    testImplementation "io.mockk:mockk-agent:$mockkVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
-    testImplementation "androidx.test:core:1.5.0"
-    testImplementation "androidx.test:runner:1.5.0"
-    testImplementation "androidx.test.ext:junit:1.1.5"
+    testImplementation "androidx.test:core:$androidxTestCoreVersion"
+    testImplementation "androidx.test:runner:$androidxTestRunnerVersion"
+    testImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"

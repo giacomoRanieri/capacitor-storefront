@@ -1,8 +1,6 @@
 package com.capacitor.plugin.storefront
 
 import android.content.Context
-import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.BillingResult
 import com.getcapacitor.JSObject
 import com.getcapacitor.PluginCall
 import io.mockk.*
@@ -33,7 +31,9 @@ class CapacitorStorefrontPluginTest {
         Dispatchers.setMain(testDispatcher)
 
         mockImpl = mockk<CapacitorStorefront>()
-        plugin = CapacitorStorefrontPlugin(mockImpl)
+        plugin = spyk(CapacitorStorefrontPlugin(mockImpl))
+        val mockContext = mockk<Context>(relaxed = true)
+        every { plugin.context } returns mockContext
     }
 
     @After
@@ -45,12 +45,7 @@ class CapacitorStorefrontPluginTest {
     @Test
     fun `initialize resolves when implementation succeeds`() {
         val call = mockk<PluginCall>(relaxed = true)
-        try {
         coEvery { mockImpl.initialize(any()) } just Runs
-        } catch (e: Exception) {
-            // Handle exception if needed
-            e.printStackTrace()
-        }
 
         plugin.initialize(call)
 
@@ -64,11 +59,7 @@ class CapacitorStorefrontPluginTest {
     fun `initialize rejects when implementation throws`() {
         val call = mockk<PluginCall>(relaxed = true)
 
-        val mockImpl = mockk<CapacitorStorefront>()
         coEvery { mockImpl.initialize(any()) } throws RuntimeException("init failed")
-        val field = plugin.javaClass.getDeclaredField("implementation")
-        field.isAccessible = true
-        field.set(plugin, mockImpl)
 
         plugin.initialize(call)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -80,12 +71,7 @@ class CapacitorStorefrontPluginTest {
     fun `getStorefront resolves with countryCode when implementation succeeds`() {
         val call = mockk<PluginCall>(relaxed = true)
         val expected = "US"
-
-        val mockImpl = mockk<CapacitorStorefront>()
         coEvery { mockImpl.getStorefront() } returns expected
-        val field = plugin.javaClass.getDeclaredField("implementation")
-        field.isAccessible = true
-        field.set(plugin, mockImpl)
 
         plugin.getStorefront(call)
         testDispatcher.scheduler.advanceUntilIdle()

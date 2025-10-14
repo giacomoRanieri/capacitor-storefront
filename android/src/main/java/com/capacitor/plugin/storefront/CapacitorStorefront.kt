@@ -13,12 +13,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-// Enum to track the initialization status
-enum class Status {
-    NOT_INITIALIZED,
-    INITIALIZED
-}
-
 /**
  * Manages the initialization of the BillingClient and the retrieval of product configurations.
  * This class contains the business logic.
@@ -84,7 +78,7 @@ class CapacitorStorefront() {
             { billingResult, billingConfig ->
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK && billingConfig != null) {
                     val countryCode = billingConfig.countryCode
-                    if (!countryCode.isNullOrEmpty()) {
+                    if (countryCode.isNotEmpty()) {
                         continuation.resume(countryCode)
                     } else {
                         continuation.resumeWithException(IllegalStateException("Country code not available"))
