@@ -5,7 +5,6 @@ export interface Storefront {
   readonly countryCode: string;
 }
 export interface CapacitorStorefrontPlugin {
-
   /**
    * Initialize the underlying store client
    */
@@ -18,6 +17,4 @@ export interface CapacitorStorefrontPlugin {
    * not be obtained for account.
    */
   getStorefront(): Promise<Storefront>;
-
 }
-
