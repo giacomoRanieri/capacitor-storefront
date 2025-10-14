@@ -1,17 +1,29 @@
 package com.capacitor.plugin.storefront
 
 import android.content.Context
-import com.android.billingclient.api.*
-import io.mockk.*
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingConfig
+import com.android.billingclient.api.BillingConfigResponseListener
+import com.android.billingclient.api.BillingResult
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.slot
+import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import kotlin.test.assertFailsWith
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
@@ -71,6 +83,7 @@ class CapacitorStorefrontTest {
         }
     }
 
+
     @Test
     fun `initialize - failure case`() = runTest {
         // Arrange
@@ -92,12 +105,15 @@ class CapacitorStorefrontTest {
         }
 
         // Act & Assert
-        assertThrows(IllegalStateException::class.java) {
-            runTest {
-                capacitorStorefront.initialize(context)
-            }
+        // Use assertFailsWith for suspend functions
+        assertFailsWith<IllegalStateException> {
+            capacitorStorefront.initialize(context)
         }
+
+        // Because the exception is caught, the status remains NOT_INITIALIZED.
         assertEquals(Status.NOT_INITIALIZED, capacitorStorefront.getStatus())
+
+        // Verification will now pass as startConnection is called before the exception is thrown.
         verify {
             billingClient.startConnection(any())
         }
@@ -188,13 +204,12 @@ class CapacitorStorefrontTest {
 
         // Act & Assert
         capacitorStorefront.initialize(context)
-        assertThrows(IllegalStateException::class.java) {
-            runTest {
-                capacitorStorefront.getStorefront()
-            }
+
+        // Use assertFailsWith and remove the nested runTest
+        assertFailsWith<IllegalStateException> {
+            capacitorStorefront.getStorefront()
         }
     }
-
     @Test
     fun `service disconnected should update status`() = runTest {
         // Arrange

@@ -4,8 +4,8 @@ import android.content.Context
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingResult
-import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.GetBillingConfigParams
+import com.android.billingclient.api.PurchasesUpdatedListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
